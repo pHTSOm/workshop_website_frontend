@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
+    />
+    <title>Shop Assistant</title>
+
+    
+    <link href="/dist/material_icons.css" rel="stylesheet" />
+    <link href="/dist/3.8.3_dist_vuetify.min.css" rel="stylesheet" />
+    <link href="/dist/lex-web-ui.min.css" rel="stylesheet" />
+    <link href="/dist/lex-web-ui-loader.css" rel="stylesheet" />
+  </head>
+  <body>
+    
+    <script src="/dist/3.5.13_dist_vue.global.prod.js"></script>
+    <script src="/dist/4.1.0_dist_vuex.min.js"></script>
+    <script src="/dist/3.8.3_dist_vuetify.min.js"></script>
+    <script src="/dist/lex-web-ui.min.js"></script>
+    <script src="/dist/lex-web-ui-loader.js"></script>
+
+    <script>
+      
+      window.addEventListener("load", function () {
+      
+        var chatbotConfig = {
+          cognito: {
+            poolId: "YOURCOGNITO_POOL_ID",
+          },
+          lex: {
+            botName: "YOUR_BOT_NAME",
+            initialText: "Hi! How can I help you?",
+            initialUtterance: "",
+            region: "us-west-2",
+            v2BotId: "YOUR_BOT_ID",
+            v2BotAliasId: "YOUR_BOT_ALIAS_ID",
+            v2BotLocaleId: "YOUR_BOT_LOCALE_ID",
+            sessionAttributes: {
+              userAgent: navigator.userAgent,
+            },
+          },
+          ui: {
+            toolbarTitle: "Shop Assistant",
+            parentOrigin: window.location.origin,
+            AllowSuperDangerousHTMLInMessage: true,
+          },
+        };
+
+        
+        var loader = new ChatBotUiLoader.FullPageLoader({
+          baseUrl: "/dist/",
+          shouldLoadConfigFromEvent: false,
+          shouldLoadConfigFromJsonFile: false,
+          shouldIgnoreConfigWhenEmbedded: false,
+          shouldLoadMinDeps: false, 
+        });
+
+
+        loader
+          .load(chatbotConfig)
+          .then(function () {
+            console.log("ChatBot loaded successfully");
+          })
+          .catch(function (error) {
+            console.error("Failed to load chatbot:", error);
+          });
+      });
+    </script>
+  </body>
+</html>

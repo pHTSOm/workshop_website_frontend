@@ -1,0 +1,24 @@
+{
+  "cognito": {
+    "poolId": "us-west-2:62636f1a-9658-42c2-80e5-7bb418961ea4"
+  },
+  "lex": {
+    "botName": "Shopbot", 
+    "initialText": "Hi! How can I help you?",
+    "initialUtterance": "",
+    "region": "us-west-2",
+    "v2BotId": "GKTRVUVVJM",        
+    "v2BotAliasId": "TBKLYGUXJC", 
+    "v2BotLocaleId": "en_US"
+  },
+  "ui": {
+    "toolbarTitle": "Shop Assistant",
+    "parentOrigin": "http://localhost:3000",
+    "AllowSuperDangerousHTMLInMessage": true
+  },
+  "iframe": {
+    "iframeOrigin": "http://localhost:3000",
+    "iframeSrcPath": "/dist/index.html#/?lexWebUiEmbed=true",
+    "shouldLoadIframeMinimized": false
+  }
+}

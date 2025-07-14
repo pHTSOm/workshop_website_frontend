@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import Routers from '../../routers/Routers';
+import ChatbotWidget from '../UI/ChatbotWidget';
 // import AdminNav from '../AdminNav.jsx';
 import { AuthService } from '../../services/api';
 
@@ -35,6 +36,7 @@ const Layout = () => {
       <div className="main-content">
         <Routers/>
       </div>
+      <ChatbotWidget/>
       <Footer/>
     </>
   );

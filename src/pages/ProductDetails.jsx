@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Row,
@@ -18,7 +18,7 @@ import { motion } from "framer-motion";
 import ProductsList from "../components/UI/ProductsList";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { AuthService, ReviewService, ProductService } from "../services/api";
+import mockProducts from "../assets/data/products";
 import { addItemToCart } from "../slices/cartSlice";
 
 const ProductDetails = () => {
@@ -27,67 +27,69 @@ const ProductDetails = () => {
 
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
-  const [reviews, setReviews] = useState([]);
+  const [reviews] = useState([]); // No backend reviews
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState("desc");
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
-  // Review form state
+  // Review form state (frontend only, no submit)
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
-  const [reviewSubmitting, setReviewSubmitting] = useState(false);
-  const [reviewError, setReviewError] = useState("");
+  const [reviewSubmitting] = useState(false);
+  const [reviewError] = useState("");
 
   // Additional images state
   const [mainImage, setMainImage] = useState("");
   const [thumbnails, setThumbnails] = useState([]);
 
-  const renderReviewForm = () => {
-    const isLoggedIn = AuthService.isLoggedIn();
-    const currentUser = isLoggedIn ? AuthService.getCurrentUser() : null;
-    const displayName = currentUser?.name || "User";
+  // Fetch product from mock data
+  useEffect(() => {
+    setLoading(true);
+    const productId = parseInt(id);
+    const foundProduct = mockProducts.find((p) => p.id === productId);
+    setProduct(foundProduct || null);
+    if (foundProduct && foundProduct.imgUrl && foundProduct.imgUrl.length > 0) {
+      setMainImage(foundProduct.imgUrl[0]);
+      setThumbnails(foundProduct.imgUrl);
+    } else {
+      setMainImage(require("../assets/images/placeholder.png"));
+      setThumbnails([require("../assets/images/placeholder.png")]);
+    }
+    // Related products (same category, exclude self)
+    if (foundProduct) {
+      setRelatedProducts(
+        mockProducts.filter(
+          (p) =>
+            p.category === foundProduct.category && p.id !== foundProduct.id
+        )
+      );
+    } else {
+      setRelatedProducts([]);
+    }
+    setLoading(false);
+  }, [id]);
 
+  // Review form (frontend only, no backend)
+  const renderReviewForm = () => {
     return (
       <div>
         <h4 className="mb-3">Write a Review</h4>
-
-        {reviewError && (
-          <Alert color="danger" className="mb-3">
-            {reviewError}
-          </Alert>
-        )}
-
-        {/* Add a simple indicator showing who is posting the review */}
+        <Alert color="info" className="mb-3">
+          Review functionality is disabled in demo mode.
+        </Alert>
         <p className="mb-3">
-          {isLoggedIn ? (
-            <span>
-              Posting as <strong>{displayName}</strong>
-            </span>
-          ) : (
-            <span>
-              Posting as <strong>Guest</strong>
-            </span>
-          )}
+          Posting as <strong>Guest</strong>
         </p>
-
-        <Form onSubmit={handleReviewSubmit}>
+        <Form onSubmit={(e) => e.preventDefault()}>
           <FormGroup className="rating__group">
-            <Label>
-              Your Rating {!isLoggedIn && <small>(login required)</small>}
-            </Label>
+            <Label>Your Rating</Label>
             <div className="rating-stars">
               {[...Array(5)].map((_, index) => (
                 <span
                   key={index}
-                  onClick={() =>
-                    isLoggedIn ? setReviewRating(index + 1) : null
-                  }
                   className={index < reviewRating ? "filled" : ""}
-                  style={{
-                    cursor: isLoggedIn ? "pointer" : "not-allowed",
-                    opacity: isLoggedIn ? 1 : 0.6,
-                  }}
+                  style={{ cursor: "not-allowed", opacity: 0.6 }}
                 >
                   <i
                     className={`ri-star-${
@@ -97,16 +99,10 @@ const ProductDetails = () => {
                 </span>
               ))}
             </div>
-            {!isLoggedIn && (
-              <small className="text-muted">
-                You must be logged in to rate products.
-                <Link to="/login" className="ms-2">
-                  Login here
-                </Link>
-              </small>
-            )}
+            <small className="text-muted">
+              You must be logged in to rate products. (Demo only)
+            </small>
           </FormGroup>
-
           <FormGroup>
             <Label for="reviewText">Your Review</Label>
             <Input
@@ -116,161 +112,17 @@ const ProductDetails = () => {
               rows="5"
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
-              required
+              disabled
             />
           </FormGroup>
-
-          <Button color="primary" type="submit" disabled={reviewSubmitting}>
-            {reviewSubmitting ? "Submitting..." : "Submit Review"}
+          <Button color="primary" type="submit" disabled>
+            Submit Review
           </Button>
         </Form>
       </div>
     );
   };
 
-  // Use useCallback to memoize the fetchProductDetails function
-
-  const fetchProductDetails = useCallback(async () => {
-    try {
-      setLoading(true);
-
-      // Convert string ID to integer to ensure proper API call
-      const productId = parseInt(id);
-      console.log(
-        `Fetching product with ID: ${productId} (type: ${typeof productId})`
-      );
-
-      // Make API call with numeric ID
-      const response = await ProductService.getProductById(productId);
-
-      if (response && response.success && response.product) {
-        const productData = response.product;
-        console.log("Product data received:", productData);
-        setProduct(productData);
-
-        // Process product images
-        let mainImg = "/placeholder.png";
-        let allImages = [];
-
-        if (productData.imgUrl) {
-          try {
-            let parsedImages = [];
-        
-            // Parse image data consistently
-            if (typeof productData.imgUrl === "string") {
-              if (productData.imgUrl.startsWith("[")) {
-                parsedImages = JSON.parse(productData.imgUrl);
-              } else {
-                parsedImages = [productData.imgUrl];
-              }
-            } else if (Array.isArray(productData.imgUrl)) {
-              parsedImages = productData.imgUrl;
-            }
-        
-            // Process all images consistently
-            allImages = parsedImages
-              .map((img) => {
-                if (!img || img === "null") return "/placeholder.png";
-        
-                // Full URLs
-                if (img.startsWith("http")) return img;
-        
-                // Paths starting with /uploads/ - leave as is
-                if (img.startsWith("/uploads/")) return img;
-        
-                // Paths starting with /products/ - add /uploads prefix
-                if (img.startsWith("/products/")) return `/uploads${img}`;
-        
-                // Other relative paths - assume products folder
-                return `/uploads/products/${img.replace(/^\//, "")}`;
-              })
-              .filter((img) => img);
-        
-            if (allImages.length > 0) {
-              mainImg = allImages[0];
-            }
-          } catch (error) {
-            console.error("Error processing product images:", error);
-            mainImg = "/placeholder.png";
-            allImages = [mainImg];
-          }
-        }
-
-        console.log("Processed images:", { mainImg, allImages });
-
-        // Set images
-        setMainImage(mainImg);
-        setThumbnails(allImages);
-
-        // Fetch related products
-        if (productData.category) {
-          try {
-            console.log(
-              `Fetching related products for category: ${productData.category}`
-            );
-            // Changed from direct axios to ProductService
-            const relatedResponse = await ProductService.getProductsByCategory(
-              productData.category,
-              { limit: 4 }
-            );
-
-            if (relatedResponse && relatedResponse.success) {
-              // Filter out the current product
-              const related = (relatedResponse.products || []).filter(
-                (item) => item.id !== parseInt(id)
-              );
-              setRelatedProducts(related.slice(0, 4));
-            }
-          } catch (error) {
-            console.error("Error fetching related products:", error);
-            // Silently handle the error
-            setRelatedProducts([]);
-          }
-        }
-
-        // Fetch reviews
-        try {
-          console.log(`Fetching reviews for product: ${id}`);
-          // Changed from direct axios to ReviewService
-          const reviewsResponse = await ReviewService.getReviewsByProduct(id);
-
-          if (reviewsResponse && reviewsResponse.success) {
-            setReviews(reviewsResponse.reviews || []);
-          }
-        } catch (error) {
-          console.error("Error fetching reviews:", error);
-          // Silently handle the error
-          setReviews([]);
-        }
-      } else {
-        console.error("Product data not found in response:", response);
-        toast.error("Product not found or invalid response format");
-      }
-
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching product:", error);
-      toast.error(`Error: ${error.message}`);
-      setLoading(false);
-    }
-  }, [id]);
-
-  useEffect(() => {
-    // Reset state when product ID changes
-    setProduct(null);
-    setRelatedProducts([]);
-    setReviews([]);
-    setLoading(true);
-    setSelectedVariant(null);
-    setQuantity(1);
-    setReviewRating(0);
-    setReviewText("");
-    setMainImage("");
-    setThumbnails([]);
-    setReviewError("");
-
-    fetchProductDetails();
-  }, [id, fetchProductDetails]);
   const handleQuantityChange = (operation) => {
     if (operation === "increase") {
       setQuantity((prev) => prev + 1);
@@ -322,96 +174,6 @@ const ProductDetails = () => {
       .catch((error) => {
         toast.error(error.message || "Failed to add product to cart");
       });
-  };
-
-  const handleReviewSubmit = async (e) => {
-    e.preventDefault();
-    setReviewError("");
-
-    if (!reviewText.trim()) {
-      setReviewError("Please enter your review");
-      return;
-    }
-
-    const isLoggedIn = AuthService.isLoggedIn();
-
-    // For rating, only validate if the user tries to use it while not logged in
-    if (!isLoggedIn && reviewRating > 0) {
-      setReviewError(
-        "You must be logged in to rate products. Your review will be submitted without a rating."
-      );
-      setReviewRating(0);
-    }
-
-    setReviewSubmitting(true);
-
-    try {
-      const reviewData = {
-        productId: id,
-        rating: isLoggedIn ? reviewRating : null,
-        comment: reviewText,
-      };
-
-      console.log("Submitting review:", reviewData);
-      const token = localStorage.getItem("token");
-      console.log("Headers:", token ? "Auth token present" : "No auth token");
-      const config = token
-        ? {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        : {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          };
-
-      const response = await ReviewService.createReview(reviewData);
-
-      if (response && response.success) {
-        toast.success("Review submitted successfully");
-
-        // Get the newly created review from the response
-        const newReview = response.review;
-
-        // Add the new review to the beginning of the reviews array
-        setReviews([newReview, ...reviews]);
-
-        // Update product rating if needed
-        if (newReview.rating) {
-          // Calculate new average rating
-          const allRatings = reviews
-            .filter((r) => r.rating)
-            .map((r) => r.rating)
-            .concat(newReview.rating);
-
-          const newAvgRating =
-            allRatings.reduce((sum, rating) => sum + rating, 0) /
-            allRatings.length;
-
-          // Update product state with new average rating
-          setProduct((prev) => ({
-            ...prev,
-            avgRating: newAvgRating,
-          }));
-        }
-
-        // Reset form
-        setReviewRating(0);
-        setReviewText("");
-
-        // No need to call fetchProductDetails() anymore!
-      } else {
-        setReviewError(response.data?.message || "Failed to submit review");
-      }
-    } catch (error) {
-      console.error("Error submitting review:", error);
-      setReviewError("Network error. Please try again.");
-    } finally {
-      setReviewSubmitting(false);
-    }
   };
 
   // Handle thumbnail click for image gallery

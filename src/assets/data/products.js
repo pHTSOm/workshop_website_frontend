@@ -1,0 +1,117 @@
+const products = [
+  {
+    id: 1,
+    productName: "AMD Ryzen 7 5800X",
+    shortDesc: "High-performance 8-core, 16-thread desktop processor",
+    description:
+      "The AMD Ryzen 7 5800X is a high-performance desktop processor with 8 cores and 16 threads. Built on AMD's 7nm process, it delivers exceptional gaming and multitasking performance. With a base clock of 3.8GHz and boost up to 4.7GHz, it's perfect for gamers and content creators alike. The processor features 36MB of combined cache and supports PCIe 4.0.",
+    price: 349.99,
+    category: "CPU",
+    brand: "AMD",
+    stock: 25,
+    isNew: true,
+    isBestSeller: true,
+    tags: "processor,ryzen,amd",
+    imgUrl: [
+      require("../images/amd-ryzen-7-5800x-1.png"),
+      require("../images/amd-ryzen-7-5800x-2.png"),
+      require("../images/amd-ryzen-7-5800x-3.png"),
+    ],
+  },
+  {
+    id: 2,
+    productName: "NVIDIA GeForce RTX 3080",
+    shortDesc: "Ultimate gaming GPU with 10GB GDDR6X memory",
+    description:
+      "The NVIDIA GeForce RTX 3080 is built on the Ampere architecture, delivering amazing performance for gamers and creators. It features 8704 CUDA cores, 10GB of GDDR6X memory, and 2nd gen ray tracing cores for incredible visual fidelity. With DLSS AI acceleration and NVIDIA Reflex technology, this card delivers the ultimate gaming experience at high resolutions with high frame rates.",
+    price: 699.99,
+    category: "GPU",
+    brand: "NVIDIA",
+    stock: 15,
+    isNew: true,
+    isBestSeller: true,
+    tags: "graphics,nvidia,gpu,rtx",
+    imgUrl: [
+      require("../images/nvidia-rtx-3080-1.png"),
+      require("../images/nvidia-rtx-3080-2.png"),
+      require("../images/nvidia-rtx-3080-3.png"),
+    ],
+  },
+  {
+    id: 3,
+    productName: "Samsung 980 PRO SSD 1TB",
+    shortDesc: "PCIe 4.0 NVMe SSD with blazing fast performance",
+    description:
+      "The Samsung 980 PRO is a high-performance PCIe 4.0 NVMe SSD designed for tech enthusiasts and hardcore gamers. With sequential read speeds up to 7,000 MB/s and write speeds up to 5,000 MB/s, it delivers twice the data transfer rate of PCIe 3.0 SSDs. The drive features Samsung's custom Elpis controller and V-NAND technology for reliable performance and endurance.",
+    price: 149.99,
+    category: "Storage",
+    brand: "Samsung",
+    stock: 50,
+    isNew: true,
+    isBestSeller: false,
+    tags: "storage,ssd,nvme,samsung",
+    imgUrl: [
+      require("../images/samsung-980-pro-ssd-1.png"),
+      require("../images/samsung-980-pro-ssd-2.png"),
+      require("../images/samsung-980-pro-ssd-3.png"),
+    ],
+  },
+  {
+    id: 4,
+    productName: "Corsair Vengeance RGB PRO 32GB",
+    shortDesc: "High-performance DDR4 RAM with dynamic RGB lighting",
+    description:
+      "Corsair Vengeance RGB PRO series DDR4 memory lights up your PC with mesmerizing dynamic multi-zone RGB lighting, while delivering the best in performance. Optimized for maximum bandwidth and tight response times on the latest Intel and AMD DDR4 motherboards, the Vengeance RGB PRO series provides the best performance and stability for overclocking enthusiasts.",
+    price: 159.99,
+    category: "Memory",
+    brand: "Corsair",
+    stock: 40,
+    isNew: false,
+    isBestSeller: true,
+    tags: "memory,ram,ddr4,corsair",
+    imgUrl: [
+      require("../images/corsair-vengeance-rgb-pro-1.png"),
+      require("../images/corsair-vengeance-rgb-pro-2.png"),
+      require("../images/corsair-vengeance-rgb-pro-3.png"),
+    ],
+  },
+  {
+    id: 5,
+    productName: "ASUS ROG Strix B550-F Gaming",
+    shortDesc: "High-performance AMD B550 ATX gaming motherboard",
+    description:
+      "The ROG Strix B550-F Gaming motherboard delivers a feature-rich design with robust power solution and comprehensive cooling controls for AMD Ryzen CPUs. It includes Intel 2.5 Gb Ethernet, USB 3.2 Gen 2 Type-C, and ROG SupremeFX audio. The board also features AI Noise-Cancelling Microphone technology and Aura Sync RGB lighting for a customized gaming setup.",
+    price: 189.99,
+    category: "Motherboard",
+    brand: "ASUS",
+    stock: 20,
+    isNew: false,
+    isBestSeller: false,
+    tags: "motherboard,amd,asus,rog",
+    imgUrl: [
+      require("../images/asus-rog-strix-b550-f-1.png"),
+      require("../images/asus-rog-strix-b550-f-2.png"),
+    ],
+  },
+  {
+    id: 6,
+    productName: "Dell XPS 13 (2023)",
+    shortDesc: "Ultra-thin premium laptop with InfinityEdge display",
+    description:
+      "The Dell XPS 13 is an ultraportable laptop that combines premium design with powerful performance. Featuring Intel's latest generation processors, a stunning 13.4-inch InfinityEdge display with minimal bezels, and a precision-crafted aluminum chassis, the XPS 13 delivers an exceptional computing experience. The laptop boasts a comfortable, backlit keyboard, a responsive glass touchpad, and impressive battery life of up to 12 hours. With Thunderbolt 4 connectivity, Wi-Fi 6 compatibility, and enhanced thermal design, the XPS 13 is perfect for professionals, students, and anyone seeking a premium computing experience in a compact form factor.",
+    price: 1299.99,
+    category: "Laptop",
+    brand: "Dell",
+    stock: 30,
+    isNew: true,
+    isBestSeller: true,
+    tags: "laptop,dell,xps,ultrabook,premium",
+    imgUrl: [
+      require("../images/dell-xps-13-1.jpg"),
+      require("../images/dell-xps-13-2.jpg"),
+      require("../images/dell-xps-13-3.jpg"),
+    ],
+  },
+];
+
+export default products;

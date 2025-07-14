@@ -6,8 +6,8 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { addItemToCart } from "../../slices/cartSlice";
-import { hasProductVariants } from '../../utils/productUtils';
-import { getImageUrl } from '../../utils/imageUtils';
+import { hasProductVariants } from "../../utils/productUtils";
+import { getImageUrl } from "../../utils/imageUtils";
 
 const ProductCard = ({ item }) => {
   const dispatch = useDispatch();
@@ -53,11 +53,15 @@ const ProductCard = ({ item }) => {
           <Link to={`/shop/${item.id}`}>
             <motion.img
               whileHover={{ scale: 0.9 }}
-              src={imageUrl}
+              src={
+                typeof imageUrl === "object"
+                  ? imageUrl.default || imageUrl
+                  : imageUrl
+              }
               alt={item.productName}
               style={{ width: "100%", height: "200px", objectFit: "contain" }}
               onError={(e) => {
-                console.error(`Failed to load image: ${imageUrl}`);
+                console.error(`Failed to load image:`, imageUrl);
                 e.target.src = "/placeholder.png";
               }}
             />
