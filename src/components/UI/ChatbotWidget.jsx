@@ -134,7 +134,7 @@ export default function ChatbotWidget() {
             }}
           >
             <iframe
-              src="/chatbot-simple.html"
+              src="/chatbot.html"
               style={{
                 width: "100%",
                 height: "100%",
