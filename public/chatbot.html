@@ -44,9 +44,14 @@
           },
           ui: {
             toolbarTitle: "Shop Assistant",
-            parentOrigin: window.location.origin,
+            parentOrigin: "http://localhost:3000",
             AllowSuperDangerousHTMLInMessage: true,
           },
+          "iframe":{
+            "iframeOrigin": "http://localhost:3000",
+            "iframeSrcPath": "/lex-web-ui-loader.html",
+            "shouldLoadIframeMinimized": false
+          }
         };
 
         
